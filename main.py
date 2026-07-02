@@ -16,11 +16,8 @@ warnings.filterwarnings('ignore')
 # Machine Learning Libraries
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import classification_report, accuracy_score
-import xgboost as xgb
-
-# For statistical models
-from scipy.special import comb
-from scipy.optimize import minimize
+from scipy.special import factorial
+from scipy.stats import poisson
 
 class HybridFootballPredictor:
     def __init__(self, data_path='results.csv'):
@@ -95,7 +92,7 @@ class HybridFootballPredictor:
     
     def poisson_probability(self, lambda_val, k):
         """Calculate Poisson probability P(X = k)"""
-        return (lambda_val ** k * np.exp(-lambda_val)) / np.math.factorial(k)
+        return (lambda_val ** k * np.exp(-lambda_val)) / factorial(k)
     
     def dixon_coles_correction(self, home_goals, away_goals, home_lambda, away_lambda, rho=0.03):
         """Apply Dixon-Coles correction factor for low-scoring matches"""
@@ -325,7 +322,6 @@ def print_prediction_output(prediction, neutral=False):
     total_goals_expected = prediction['expected_home_goals'] + prediction['expected_away_goals']
     
     # Calculate O/U probability
-    from scipy.stats import poisson
     over_prob = 0
     for h in range(3, 10):
         for a in range(0, 10):
